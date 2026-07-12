@@ -4,13 +4,13 @@ from app.core.config import settings
 
 engine = create_engine(settings.DATABASE_URL)
 SessionLocal=sessionmaker(
-    autocommit=False 
+    autocommit=False,
     autoflush=False,
-    bind=engine
+    bind=engine,
 )
 
 class Base(DeclarativeBase):
-    pass 
+    pass
 
 
 def get_db():
