@@ -1,0 +1,35 @@
+backend/
+│
+├── app/
+│   │
+│   ├── api/
+│   │    └── v1/
+│   │         ├── endpoints/
+│   │         └── router.py
+│   │
+│   ├── core/
+│   │
+│   ├── database/
+│   │
+│   ├── models/
+│   │
+│   ├── schemas/
+│   │
+│   ├── repositories/
+│   │
+│   ├── services/
+│   │
+│   ├── middleware/
+│   │
+│   ├── utils/
+│   │
+│   ├── tests/
+│   │
+│   └── main.py
+│
+├── .env
+├── requirements.txt
+├── Dockerfile
+├── docker-compose.yml
+├── alembic/
+└── README.md
