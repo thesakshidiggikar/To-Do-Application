@@ -1,0 +1,31 @@
+git init
+
+git status
+
+git add .
+
+git commit -m "message"
+
+git log --oneline
+
+git diff
+
+git branch
+
+git switch -c feature-name
+
+git switch main
+
+git merge feature-name
+
+git remote -v
+
+git push origin main
+
+git pull origin main
+
+git clone <repo-url>
+
+git restore file.py
+
+git reset
