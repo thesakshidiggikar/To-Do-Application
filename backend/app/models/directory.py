@@ -1,10 +1,12 @@
 from datetime import datetime
-from sqlalchemy import DateTime , String 
+from sqlalchemy import DateTime , String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List,TYPE_CHECKING
-from app.database.database import Base 
+from app.database.database import Base
+
 if TYPE_CHECKING:
     from app.models.todo import Base
+    
 class Directory(Base):
     __tablename__="directories"
     id:Mapped[int]=mapped_column(primary_key=True,index=True)
@@ -20,7 +22,7 @@ class Directory(Base):
     updated_at:Mapped[datetime]=mapped_column(
         DateTime,
         default=datetime.utcnow,
-        onupdate=datetime.utcnow
+        onupdate=datetime.now,
     )
 
     todos:Mapped[List["Todo"]]=relationship(
