@@ -29,3 +29,8 @@ git clone <repo-url>
 git restore file.py
 
 git reset
+
+git status
+git add .
+git commit -m "feat(todo): create todo model"
+git push origin feature/database-setup

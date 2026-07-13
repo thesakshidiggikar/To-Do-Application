@@ -1,0 +1,46 @@
+API:
+    list all task: GET
+        payload=empty it is a request body or url params
+        response:
+            [
+                task id:uuid
+                title: str
+                subtitle:str
+                date:DD/MM/YYYY
+                status:str
+                is_star:bool
+                directory:str
+
+            ]
+
+    Add Task: POST
+        payload:
+            {
+                title:str
+                date:DD/MM/YYYY
+                desc:str
+                directory_id:int
+                mark_imp:bool
+                mark_comp:bool
+            }
+        Response:{
+            "id": 25,
+            "title": "Study FastAPI",
+            "description": "Complete CRUD",
+            "due_date": "2026-07-15",
+            "directory_id": 1,
+            "important": true,
+            "completed": false,
+            "created_at": "2026-07-12T18:10:21",
+            "updated_at": "2026-07-12T18:10:21"
+            }
+
+    fetch/directory: GET
+        Payload:empty
+            Response[
+                {
+                    name:str
+                    id:int
+                }
+            ]
+
