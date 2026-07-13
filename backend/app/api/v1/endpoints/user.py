@@ -3,10 +3,12 @@ from sqlalchemy.orm import Session
 
 from app.database.database import get_db
 from app.schemas.user import (
+    UserLogin,
     UserRegister,
     UserResponse,
 )
 from app.services.user_service import (
+    login_user_service,
     register_user_service,
 )
 
@@ -17,15 +19,13 @@ router = APIRouter(
 
 
 @router.post(
-    "/register",
-    response_model=UserResponse,
-    status_code=status.HTTP_201_CREATED,
+    "/login",
 )
-def register_user(
-    user: UserRegister,
+def login_user(
+    user: UserLogin,
     db: Session = Depends(get_db),
 ):
-    return register_user_service(
+    return login_user_service(
         db,
         user,
     )

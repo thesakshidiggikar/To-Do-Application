@@ -22,6 +22,8 @@ from app.services.todo_service import (
     update_todo_service,
     delete_todo_service,
 )
+from app.api.dependencies import get_current_user
+from app.models.user import User
 
 router = APIRouter(
     prefix="/todos",
@@ -37,6 +39,7 @@ router = APIRouter(
 def create_todo(
     todo: TodoCreate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     return create_todo_service(db, todo)
 
@@ -47,6 +50,7 @@ def create_todo(
 )
 def get_all_todos(
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     return get_all_todos_service(db)
 
@@ -57,7 +61,9 @@ def get_all_todos(
 )
 def get_todo(
     todo_id: int,
+    # db: Session = Depends(get_db),
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     todo = get_todo_by_id_service(db, todo_id)
 
@@ -79,6 +85,7 @@ def update_todo(
     todo_id: int,
     todo: TodoUpdate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     db_todo = get_todo_by_id_service(db, todo_id)
 
@@ -104,6 +111,7 @@ def update_todo(
 def delete_todo(
     todo_id: int,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     db_todo = get_todo_by_id_service(db, todo_id)
 
