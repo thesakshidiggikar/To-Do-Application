@@ -8,6 +8,13 @@ from app.database.database import get_db
 from app.models.user import User
 from app.repositories.user_repository import get_user_by_email
 
+# OLD
+# OAuth2PasswordBearer(
+#     tokenUrl="/api/v1/users/login",
+# )
+
+# NEW
+# This enables the Authorize button in Swagger UI.
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="/api/v1/users/login",
 )
