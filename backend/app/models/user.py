@@ -1,9 +1,18 @@
+# OLD
+# from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+# NEW
 from datetime import datetime
+from typing import List, TYPE_CHECKING
 
 from sqlalchemy import DateTime, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.database import Base
+
+if TYPE_CHECKING:
+    from app.models.directory import Directory
+    from app.models.todo import Todo
 
 
 class User(Base):
@@ -30,13 +39,30 @@ class User(Base):
         String(255),
         nullable=False,
     )
+    # OLD
+    directories: Mapped[List["Directory"]] = relationship(
+        back_populates="user",
+    )
 
     # NEW
+    # A user can own multiple directories.
+    directories: Mapped[List["Directory"]] = relationship(
+        back_populates="user",
+    )
+    # NEW
     # One user can own multiple todos.
+    # OLD
     todos = relationship(
         "Todo",
         back_populates="user",
         cascade="all, delete",
+    )
+
+    # NEW
+    # One user can own multiple todos.
+    todos: Mapped[List["Todo"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
     )
 
     created_at: Mapped[datetime] = mapped_column(
