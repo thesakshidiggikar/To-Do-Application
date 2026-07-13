@@ -27,6 +27,10 @@ from app.database.base import Base
 from app.models.directory import Directory
 from app.models.todo import Todo
 
+# NEW
+# Import User model so Alembic can detect the users table.
+from app.models.user import User
+
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
