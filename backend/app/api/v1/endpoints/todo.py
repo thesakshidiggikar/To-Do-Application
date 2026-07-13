@@ -1,9 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-
+from app.exceptions.custom_exceptions import (
+    TodoNotFoundException,
+)
 from app.database.database import get_db
 from app.schemas.todo import (
     TodoCreate,
+
+    # OLD
+    # TodoResponse,
+
+    # NEW
+    # Separate schema for update requests.
+    TodoUpdate,
     TodoResponse,
 )
 from app.services.todo_service import (
@@ -52,12 +61,13 @@ def get_todo(
 ):
     todo = get_todo_by_id_service(db, todo_id)
 
+    # if todo is None:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_404_NOT_FOUND,
+    #         detail="Todo not found",
+    #     )
     if todo is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Todo not found",
-        )
-
+        raise TodoNotFoundException()
     return todo
 
 
@@ -67,16 +77,18 @@ def get_todo(
 )
 def update_todo(
     todo_id: int,
-    todo: TodoCreate,
+    todo: TodoUpdate,
     db: Session = Depends(get_db),
 ):
     db_todo = get_todo_by_id_service(db, todo_id)
 
-    if db_todo is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Todo not found",
-        )
+    # if db_todo is None:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_404_NOT_FOUND,
+    #         detail="Todo not found",
+    #     )
+    if todo is None:
+        raise TodoNotFoundException()
 
     return update_todo_service(
         db,
@@ -95,11 +107,13 @@ def delete_todo(
 ):
     db_todo = get_todo_by_id_service(db, todo_id)
 
-    if db_todo is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Todo not found",
-        )
+    # if db_todo is None:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_404_NOT_FOUND,
+    #         detail="Todo not found",
+    #     )
+    if todo is None:
+        raise TodoNotFoundException()
 
     delete_todo_service(
         db,
