@@ -4,6 +4,11 @@ from app.exceptions.custom_exceptions import (
     TodoNotFoundException,
 )
 from app.database.database import get_db
+
+# NEW
+# Get the currently authenticated user.
+from app.api.dependencies import get_current_user
+from app.models.user import User
 from app.schemas.todo import (
     TodoCreate,
 
@@ -36,23 +41,52 @@ router = APIRouter(
     response_model=TodoResponse,
     status_code=status.HTTP_201_CREATED,
 )
+# OLD
+# def create_todo(
+#     todo: TodoCreate,
+#     db: Session = Depends(get_db),
+#     current_user: User = Depends(get_current_user),
+# ):
+#     return create_todo_service(
+#         db,
+#         todo,
+#     )
+
+# NEW
+# Pass the logged-in user to the service layer.
 def create_todo(
     todo: TodoCreate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return create_todo_service(db, todo)
+    return create_todo_service(
+        db,
+        todo,
+        current_user,
+    )
 
 
 @router.get(
     "",
     response_model=list[TodoResponse],
 )
+# OLD
+# def get_all_todos(
+#     db: Session = Depends(get_db),
+#     current_user: User = Depends(get_current_user),
+# ):
+#     todos = get_all_todos_service(db)
+
+# NEW
+# Return only the logged-in user's todos.
 def get_all_todos(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return get_all_todos_service(db)
+    todos = get_all_todos_service(
+        db,
+        current_user,
+    )
 
 
 @router.get(

@@ -1,12 +1,17 @@
 from sqlalchemy.orm import Session
 
 from app.models.todo import Todo
-from app.schemas.todo import TodoCreate
+from app.models.user import User
+from app.schemas.todo import (
+    TodoCreate,
+    TodoUpdate,
+)
 
 
 def create_todo(
     db: Session,
     todo: TodoCreate,
+    current_user: User,
 ) -> Todo:
     db_todo = Todo(
         title=todo.title,
@@ -15,6 +20,10 @@ def create_todo(
         directory_id=todo.directory_id,
         important=todo.important,
         completed=todo.completed,
+
+        # NEW
+        # Save the owner of this todo.
+        user_id=current_user.id,
     )
 
     db.add(db_todo)
@@ -26,8 +35,15 @@ def create_todo(
 
 def get_all_todos(
     db: Session,
+    current_user: User,
 ) -> list[Todo]:
-    return db.query(Todo).all()
+    return (
+        db.query(Todo)
+        .filter(
+            Todo.user_id == current_user.id,
+        )
+        .all()
+    )
 
 
 def get_todo_by_id(
@@ -44,7 +60,7 @@ def get_todo_by_id(
 def update_todo(
     db: Session,
     db_todo: Todo,
-    todo: TodoCreate,
+    todo: TodoUpdate,
 ) -> Todo:
 
     db_todo.title = todo.title

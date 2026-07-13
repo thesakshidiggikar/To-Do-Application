@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 
 from app.models.todo import Todo
+from app.models.user import User
 from app.repositories.todo_repository import (
     create_todo,
     delete_todo,
@@ -11,17 +12,46 @@ from app.repositories.todo_repository import (
 from app.schemas.todo import TodoCreate
 
 
+# OLD
+# def create_todo_service(
+#     db: Session,
+#     todo: TodoCreate,
+# ):
+#     return create_todo(
+#         db,
+#         todo,
+#     )
+
+# NEW
+# Pass the logged-in user so the todo is linked to its owner.
 def create_todo_service(
     db: Session,
     todo: TodoCreate,
-) -> Todo:
-    return create_todo(db, todo)
+    current_user: User,
+):
+    return create_todo(
+        db,
+        todo,
+        current_user,
+    )
 
 
+# OLD
+# def get_all_todos_service(
+#     db: Session,
+# ):
+#     return get_all_todos(db)
+
+# NEW
+# Return only todos that belong to the logged-in user.
 def get_all_todos_service(
     db: Session,
-) -> list[Todo]:
-    return get_all_todos(db)
+    current_user: User,
+):
+    return get_all_todos(
+        db,
+        current_user,
+    )
 
 
 def get_todo_by_id_service(

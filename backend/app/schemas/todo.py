@@ -144,6 +144,11 @@ class TodoResponse(BaseModel):
     completed: bool
     important: bool
     directory_id: int
+
+    # NEW
+    # Return the owner of the todo.
+    user_id: int
+
     created_at: datetime
     updated_at: datetime
 
