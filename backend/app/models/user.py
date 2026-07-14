@@ -13,6 +13,7 @@ from app.database.database import Base
 if TYPE_CHECKING:
     from app.models.directory import Directory
     from app.models.todo import Todo
+    from app.models.refresh_token import RefreshToken
 
 
 class User(Base):
@@ -39,6 +40,12 @@ class User(Base):
         String(255),
         nullable=False,
     )
+    # NEW
+    # Indicates whether the user's email has been verified.
+    is_verified: Mapped[bool] = mapped_column(
+        default=False,
+        nullable=False,
+    )
     # OLD
     directories: Mapped[List["Directory"]] = relationship(
         back_populates="user",
@@ -49,6 +56,10 @@ class User(Base):
     directories: Mapped[List["Directory"]] = relationship(
         back_populates="user",
     )
+    refresh_tokens: Mapped[List["RefreshToken"]] = relationship(
+    back_populates="user",
+    cascade="all, delete-orphan",
+)
     # NEW
     # One user can own multiple todos.
     # OLD

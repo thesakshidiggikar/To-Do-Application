@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 
-from jose import jwt
+from jose import JWSError, jwt
 from passlib.context import CryptContext
 
 from app.core.config import settings
@@ -28,17 +28,16 @@ def verify_password(
     )
 
 
-# Create a JWT access token.
-def create_access_token(
+# Common function used to generate JWT tokens.
+def _create_token(
     data: dict,
-):
+    expires_delta: timedelta,
+) -> str:
     to_encode = data.copy()
 
     expire = datetime.now(
         timezone.utc,
-    ) + timedelta(
-        minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES,
-    )
+    ) + expires_delta
 
     to_encode.update(
         {
@@ -51,3 +50,130 @@ def create_access_token(
         settings.SECRET_KEY,
         algorithm=settings.ALGORITHM,
     )
+
+
+# Create a short-lived access token.
+def create_access_token(
+    data: dict,
+) -> str:
+    payload = data.copy()
+
+    payload["type"] = "access"
+
+    return _create_token(
+        data=payload,
+        expires_delta=timedelta(
+            minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES,
+        ),
+    )
+
+
+# Create a long-lived refresh token.
+def create_refresh_token(
+    data: dict,
+) -> str:
+    payload = data.copy()
+
+    payload["type"] = "refresh"
+
+    return _create_token(
+        data=payload,
+        expires_delta=timedelta(
+            days=settings.REFRESH_TOKEN_EXPIRE_DAYS,
+        ),
+    )
+
+# NEW
+# Create a short-lived password reset token.
+def create_reset_token(
+    data: dict,
+) -> str:
+    payload = data.copy()
+
+    payload["type"] = "reset"
+
+    return _create_token(
+        data=payload,
+        expires_delta=timedelta(
+            minutes=15,
+        ),
+    )
+# NEW
+# Create an email verification token.
+def create_verification_token(
+    data: dict,
+) -> str:
+    payload = data.copy()
+
+    payload["type"] = "verify"
+
+    return _create_token(
+        data=payload,
+        expires_delta=timedelta(
+            hours=24,
+        ),
+    )
+
+def verify_refresh_token(
+    token: str,
+) -> dict:
+    try:
+        payload = jwt.decode(
+            token,
+            settings.SECRET_KEY,
+            algorithms=[settings.ALGORITHM],
+        )
+
+        if payload.get("type") != "refresh":
+            raise ValueError
+
+        return payload
+
+    except (JWTError, ValueError):
+        raise ValueError(
+            "Invalid refresh token."
+        )
+
+# NEW
+# Verify password reset token.
+def verify_reset_token(
+    token: str,
+) -> dict:
+    try:
+        payload = jwt.decode(
+            token,
+            settings.SECRET_KEY,
+            algorithms=[settings.ALGORITHM],
+        )
+
+        if payload.get("type") != "reset":
+            raise ValueError
+
+        return payload
+
+    except (JWTError, ValueError):
+        raise ValueError(
+            "Invalid reset token.",
+        )
+
+# NEW
+# Verify email verification token.
+def verify_verification_token(
+    token: str,
+) -> dict:
+    try:
+        payload = jwt.decode(
+            token,
+            settings.SECRET_KEY,
+            algorithms=[settings.ALGORITHM],
+        )
+
+        if payload.get("type") != "verify":
+            raise ValueError
+
+        return payload
+
+    except (JWTError, ValueError):
+        raise ValueError(
+            "Invalid verification token.",
+        )

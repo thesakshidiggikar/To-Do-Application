@@ -63,3 +63,42 @@ class UserResponse(BaseModel):
 
     # NEW (Pydantic v2)
     model_config = ConfigDict(from_attributes=True)
+
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str
+
+
+class LogoutRequest(BaseModel):
+    refresh_token: str
+
+class ChangePasswordRequest(BaseModel):
+    old_password: str
+
+    new_password: Annotated[
+        str,
+        Field(
+            min_length=8,
+            max_length=100,
+        ),
+    ]
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+    
+class ResetPasswordRequest(BaseModel):
+    token: str
+
+    new_password: Annotated[
+        str,
+        Field(
+            min_length=8,
+            max_length=100,
+        ),
+    ]
+
+class RegisterResponse(BaseModel):
+    user: UserResponse
+    verification_token: str
+
+class VerifyEmailRequest(BaseModel):
+    token: str
